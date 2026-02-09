@@ -1,17 +1,88 @@
 ---
+import Layout from "../layouts/Layout.astro";
 
+const horizontalLine = "─".repeat(120);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>LLM See</title>
-	</head>
-	<body>
-		<h1>LLM See</h1>
-	</body>
-</html>
+<Layout title="LLM See — Any webpage, as clean markdown">
+  <main class="mx-auto max-w-3xl px-6 py-24 sm:py-32">
+    <!-- Header -->
+    <header class="mb-20 text-center">
+      <p class="mb-4 text-sm tracking-wide text-(--color-accent)">
+        <span class="text-(--color-text-dim)">$</span> llm-see
+      </p>
+      <h1 class="text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+        Any webpage, as clean<br />markdown. One click.<span
+          class="inline-block w-2.5 h-5 ml-1 bg-(--color-accent) align-middle"
+          style="animation: blink 1s step-end infinite;"
+        ></span>
+      </h1>
+      <p class="mx-auto mt-6 max-w-lg text-sm leading-relaxed text-(--color-text-muted)">
+        A browser extension that strips away the noise and gives you clean,
+        structured markdown from any page — ready to drop into ChatGPT,
+        Claude, or whatever you're working with.
+      </p>
+      <div class="mt-8 flex items-center justify-center gap-4">
+        <a
+          href="#"
+          class="inline-flex items-center border border-(--color-accent) px-5 py-2.5 text-sm font-medium text-(--color-accent) transition-colors hover:bg-(--color-accent) hover:text-(--color-bg)"
+        >
+          [ Install Extension ]
+        </a>
+        <a
+          href="https://github.com/nicholasgriffintn/llm-see"
+          rel="noopener"
+          class="inline-flex items-center border border-(--color-border) px-5 py-2.5 text-sm font-medium text-(--color-text-muted) transition-colors hover:border-(--color-text-dim) hover:text-(--color-text)"
+        >
+          [ View Source ]
+        </a>
+      </div>
+    </header>
+
+    <!-- Demo Video Hero -->
+    <section class="mb-20" aria-labelledby="demo-heading">
+      <h2 id="demo-heading" class="sr-only">Demo</h2>
+      <div class="video-box">
+        <div class="video-box-top text-(--color-text-dim) text-xs select-none overflow-hidden whitespace-nowrap">
+          ┌{horizontalLine}┐
+        </div>
+        <div class="border-x border-(--color-text-dim)">
+          <video
+            class="w-full"
+            controls
+            preload="metadata"
+            poster=""
+            width="768"
+            height="432"
+          >
+            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
+        </div>
+        <div class="video-box-bottom text-(--color-text-dim) text-xs select-none overflow-hidden whitespace-nowrap">
+          └{horizontalLine}┘
+        </div>
+      </div>
+      <p class="mt-3 text-center text-xs text-(--color-text-dim)">
+        <span class="text-(--color-accent)">&gt;</span> Click the toggle. Get markdown. That's it.
+      </p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="pt-8 text-center text-xs text-(--color-text-dim)">
+      <p class="mb-6 text-(--color-border) overflow-hidden whitespace-nowrap">
+        {horizontalLine}
+      </p>
+      <p>
+        <span class="text-(--color-accent)">$</span> LLM See &mdash; Open source on
+        <a
+          href="https://github.com/nicholasgriffintn/llm-see"
+          rel="noopener"
+          class="text-(--color-text-muted) underline underline-offset-4 transition-colors hover:text-(--color-accent)"
+        >
+          GitHub
+        </a>
+      </p>
+    </footer>
+  </main>
+</Layout>
