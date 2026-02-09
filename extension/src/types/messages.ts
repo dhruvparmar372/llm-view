@@ -5,6 +5,7 @@ export interface ConvertHtmlMessage {
   target: 'offscreen';
   html: string;
   extractor?: ExtractorId;
+  url?: string;
 }
 
 export interface MarkdownReadyMessage {
@@ -16,6 +17,7 @@ export interface ConvertPageMessage {
   type: 'CONVERT_PAGE';
   html: string;
   extractor?: ExtractorId;
+  url?: string;
 }
 
 export interface DebugLogMessage {

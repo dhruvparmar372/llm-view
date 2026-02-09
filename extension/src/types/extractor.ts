@@ -1,1 +1,1 @@
-export type ExtractorId = 'defuddle' | 'readability';
+export type ExtractorId = 'defuddle' | 'readability' | 'postlight';

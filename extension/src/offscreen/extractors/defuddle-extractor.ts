@@ -1,10 +1,10 @@
 import Defuddle from 'defuddle/full';
-import type { Extractor, ExtractorResult } from './types';
+import type { Extractor, ExtractorContext, ExtractorResult } from './types';
 
 export const defuddleExtractor: Extractor = {
   label: 'Defuddle',
   id: 'defuddle',
-  extract(doc: Document): ExtractorResult {
+  extract(doc: Document, _context: ExtractorContext): ExtractorResult {
     const result = new Defuddle(doc).parse();
     return {
       content: result.content,

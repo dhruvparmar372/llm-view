@@ -8,8 +8,13 @@ export interface ExtractorResult {
   published?: string;
 }
 
+export interface ExtractorContext {
+  html: string;
+  url: string;
+}
+
 export interface Extractor {
   readonly label: string;
   readonly id: ExtractorId;
-  extract(doc: Document): ExtractorResult;
+  extract(doc: Document, context: ExtractorContext): ExtractorResult | Promise<ExtractorResult>;
 }

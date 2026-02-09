@@ -38,13 +38,14 @@ async function ensureOffscreenDocument(): Promise<void> {
 }
 
 // --- Convert HTML via offscreen document ---
-async function convertViaOffscreen(html: string, extractor?: ExtractorId): Promise<string> {
+async function convertViaOffscreen(html: string, extractor?: ExtractorId, url?: string): Promise<string> {
   await ensureOffscreenDocument();
   const response = await chrome.runtime.sendMessage({
     type: 'CONVERT_HTML',
     target: 'offscreen',
     html,
     extractor,
+    url,
   });
   return response.markdown;
 }
@@ -63,7 +64,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
 
     bgDebug(`convert requested from tab:${tabId} (${message.html.length} chars)`);
 
-    convertViaOffscreen(message.html, message.extractor)
+    convertViaOffscreen(message.html, message.extractor, message.url)
       .then((markdown) => {
         bgDebug(`conversion done for tab:${tabId} (${markdown.length} chars markdown)`);
         chrome.tabs.sendMessage(tabId, {

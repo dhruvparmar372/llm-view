@@ -1,10 +1,10 @@
 import { Readability } from '@mozilla/readability';
-import type { Extractor, ExtractorResult } from './types';
+import type { Extractor, ExtractorContext, ExtractorResult } from './types';
 
 export const readabilityExtractor: Extractor = {
   label: 'Readability',
   id: 'readability',
-  extract(doc: Document): ExtractorResult {
+  extract(doc: Document, _context: ExtractorContext): ExtractorResult {
     // Readability mutates the DOM, so clone first
     const clone = doc.cloneNode(true) as Document;
     const result = new Readability(clone).parse();

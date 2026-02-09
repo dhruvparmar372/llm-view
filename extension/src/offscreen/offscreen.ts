@@ -7,9 +7,10 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
 
   if (message.type === 'CONVERT_HTML') {
     debug(`[offscreen] converting ${message.html.length} chars`);
-    const markdown = convertHtmlToMarkdown(message.html, message.extractor);
-    debug(`[offscreen] conversion done → ${markdown.length} chars markdown`);
-    sendResponse({ markdown });
+    convertHtmlToMarkdown(message.html, message.extractor, message.url).then((markdown) => {
+      debug(`[offscreen] conversion done → ${markdown.length} chars markdown`);
+      sendResponse({ markdown });
+    });
     return true;
   }
 

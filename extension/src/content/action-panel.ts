@@ -11,6 +11,7 @@ interface ExtractorTab {
 const extractorTabs: ExtractorTab[] = [
   { id: 'defuddle', label: 'Defuddle' },
   { id: 'readability', label: 'Readability' },
+  { id: 'postlight', label: 'Postlight' },
 ];
 
 const ACTIVE_BG = '#30363d';

@@ -49,6 +49,7 @@ function init() {
       type: 'CONVERT_PAGE',
       html,
       extractor: currentExtractor,
+      url: window.location.href,
     });
   }
 

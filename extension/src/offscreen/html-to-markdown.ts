@@ -128,7 +128,7 @@ turndown.addRule('images', {
   },
 });
 
-export function convertHtmlToMarkdown(html: string, extractorId?: ExtractorId): string {
+export async function convertHtmlToMarkdown(html: string, extractorId?: ExtractorId, url?: string): Promise<string> {
   try {
     // Sanitize untrusted HTML before it touches the extractor
     const cleanHtml = DOMPurify.sanitize(html, {
@@ -139,7 +139,7 @@ export function convertHtmlToMarkdown(html: string, extractorId?: ExtractorId): 
     const doc = new DOMParser().parseFromString(cleanHtml, 'text/html');
 
     const extractor = getExtractor(extractorId);
-    const result = extractor.extract(doc);
+    const result = await extractor.extract(doc, { html: cleanHtml, url: url ?? '' });
     if (!result.content || !result.content.trim()) {
       debug(`[html-to-markdown] ${extractor.id} could not extract content`);
       return '[llm-see] Could not extract readable content from this page.';
