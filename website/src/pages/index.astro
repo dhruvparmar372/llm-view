@@ -23,12 +23,12 @@ const horizontalLine = "─".repeat(120);
         Claude, or whatever you're working with.
       </p>
       <div class="mt-8 flex items-center justify-center gap-4">
-        <a
-          href="https://github.com/dhruvparmar372/llm-view/releases/download/latest/llm-view.zip"
-          class="inline-flex items-center border border-(--color-accent) px-5 py-2.5 text-sm font-medium text-(--color-accent) transition-colors hover:bg-(--color-accent) hover:text-(--color-bg)"
+        <button
+          id="install-btn"
+          class="inline-flex items-center border border-(--color-accent) px-5 py-2.5 text-sm font-medium text-(--color-accent) transition-colors hover:bg-(--color-accent) hover:text-(--color-bg) cursor-pointer"
         >
           [ Install Extension ]
-        </a>
+        </button>
         <a
           href="https://github.com/dhruvparmar372/llm-view"
           rel="noopener"
@@ -98,4 +98,73 @@ const horizontalLine = "─".repeat(120);
       </p>
     </footer>
   </main>
+
+  <!-- Install Modal -->
+  <div id="install-modal" class="fixed inset-0 z-50 hidden items-center justify-center">
+    <div id="modal-backdrop" class="absolute inset-0 bg-black/70"></div>
+    <div class="relative mx-4 w-full max-w-md border border-(--color-border) bg-(--color-bg) p-8">
+      <button id="modal-close" class="absolute top-4 right-4 text-(--color-text-dim) transition-colors hover:text-(--color-text) cursor-pointer text-sm">
+        [ x ]
+      </button>
+      <h2 class="mb-6 text-lg font-semibold text-(--color-text)">
+        <span class="text-(--color-accent)">$</span> install
+      </h2>
+      <ol class="space-y-5 text-sm">
+        <li class="flex gap-3">
+          <span class="text-(--color-accent) shrink-0">1.</span>
+          <div>
+            <p class="text-(--color-text)">Download the extension</p>
+            <a
+              href="https://github.com/dhruvparmar372/llm-view/releases/download/latest/llm-view.zip"
+              class="mt-1 inline-flex items-center border border-(--color-accent) px-3 py-1.5 text-xs font-medium text-(--color-accent) transition-colors hover:bg-(--color-accent) hover:text-(--color-bg)"
+            >
+              [ Download llm-view.zip ]
+            </a>
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-(--color-accent) shrink-0">2.</span>
+          <div>
+            <p class="text-(--color-text)">Open the extensions page in Chrome</p>
+            <p class="mt-1 text-xs text-(--color-text-dim)">
+              Go to <code class="text-(--color-text-muted)">chrome://extensions</code> and enable <strong class="text-(--color-text-muted)">Developer mode</strong>
+            </p>
+          </div>
+        </li>
+        <li class="flex gap-3">
+          <span class="text-(--color-accent) shrink-0">3.</span>
+          <div>
+            <p class="text-(--color-text)">Drag and drop the zip file</p>
+            <p class="mt-1 text-xs text-(--color-text-dim)">
+              Drop <code class="text-(--color-text-muted)">llm-view.zip</code> onto the extensions page — done.
+            </p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </div>
 </Layout>
+
+<script>
+  const btn = document.getElementById('install-btn');
+  const modal = document.getElementById('install-modal');
+  const backdrop = document.getElementById('modal-backdrop');
+  const closeBtn = document.getElementById('modal-close');
+
+  function openModal() {
+    modal?.classList.remove('hidden');
+    modal?.classList.add('flex');
+  }
+
+  function closeModal() {
+    modal?.classList.add('hidden');
+    modal?.classList.remove('flex');
+  }
+
+  btn?.addEventListener('click', openModal);
+  backdrop?.addEventListener('click', closeModal);
+  closeBtn?.addEventListener('click', closeModal);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
