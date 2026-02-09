@@ -18,10 +18,10 @@ const sampleHtml = `
 `;
 
 describe('readabilityExtractor', () => {
-  it('extracts content from basic HTML', () => {
+  it('extracts content from basic HTML', async () => {
     const doc = new DOMParser().parseFromString(sampleHtml, 'text/html');
 
-    const result = readabilityExtractor.extract(doc, {
+    const result = await readabilityExtractor.extract(doc, {
       html: sampleHtml,
       url: 'https://example.com/test-article',
     });

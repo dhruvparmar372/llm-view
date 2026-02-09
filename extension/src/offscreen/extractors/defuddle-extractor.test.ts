@@ -18,10 +18,10 @@ const sampleHtml = `
 `;
 
 describe('defuddleExtractor', () => {
-  it('extracts content from basic HTML', () => {
+  it('extracts content from basic HTML', async () => {
     const doc = new DOMParser().parseFromString(sampleHtml, 'text/html');
 
-    const result = defuddleExtractor.extract(doc, {
+    const result = await defuddleExtractor.extract(doc, {
       html: sampleHtml,
       url: 'https://example.com/test-article',
     });
