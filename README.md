@@ -41,10 +41,11 @@ The extension follows Chrome Manifest V3 conventions and is split into three iso
 │   Content    │         │    Background     │         │     Offscreen       │
 │   Script     │         │  Service Worker   │         │     Document        │
 │              │         │                   │         │                     │
-│  Toggle pill │─ CONVERT_PAGE (html) ──────>│         │                     │
-│  + overlay   │         │                   │─ CONVERT_HTML (html) ────────>│
-│              │         │                   │         │  DOMParser + strip  │
-│              │         │                   │<── markdown ──────────────────│
+│  Toggle pill │─ CONVERT_PAGE ────────────>│         │                     │
+│  Action panel│  (html, extractor, url)     │─ CONVERT_HTML ──────────────>│
+│  + overlay   │         │                   │  (html, extractor, url)      │
+│              │         │                   │         │  Extractor registry │
+│              │         │                   │<── markdown ────────────────│
 │              │<─ MARKDOWN_READY ───────────│         │  Turndown convert   │
 │  Display md  │         │                   │         │                     │
 └─────────────┘         └──────────────────┘         └─────────────────────┘
@@ -53,31 +54,45 @@ The extension follows Chrome Manifest V3 conventions and is split into three iso
 
 ### Content Script
 
-Injected into the active tab when the user clicks the extension icon. It creates two UI elements appended to `document.documentElement` (avoiding pages that replace `document.body`):
+Injected into the active tab when the user clicks the extension icon. It creates three UI elements appended to `document.documentElement` (avoiding pages that replace `document.body`):
 
 - **Toggle pill** -- a fixed-position HUMAN / MACHINE switch at the bottom center of the page, rendered inside a closed Shadow DOM so host-page styles cannot interfere.
-- **Machine view overlay** -- a full-screen dark overlay that displays the converted markdown and provides a one-click copy button.
+- **Action panel** -- a fixed top-right bar (visible in MACHINE mode) containing an extractor switcher and a copy button. The extractor switcher is a dark pill-style tab group that lets the user choose between content extractors (Defuddle, Readability, Postlight). Switching extractors re-sends the page HTML for conversion with the newly selected extractor.
+- **Machine view overlay** -- a full-screen dark overlay that displays the converted markdown.
 
-When the user switches to MACHINE mode the content script sends the page's `innerHTML` to the background service worker and waits for the converted markdown to come back.
+When the user switches to MACHINE mode the content script sends the page's `innerHTML`, the selected extractor ID, and the page URL to the background service worker and waits for the converted markdown to come back.
 
 ### Background Service Worker
 
 The central coordinator. It listens for two things:
 
 1. **Extension icon clicks** -- injects the content script into the current tab via `chrome.scripting.executeScript`.
-2. **`CONVERT_PAGE` messages** from the content script -- ensures the offscreen document exists (creating it on-demand as a singleton), forwards the raw HTML to it, and relays the resulting markdown back to the originating tab.
+2. **`CONVERT_PAGE` messages** from the content script -- ensures the offscreen document exists (creating it on-demand as a singleton), forwards the raw HTML, extractor ID, and page URL to it, and relays the resulting markdown back to the originating tab.
 
 It also maintains a circular debug log (up to 10 000 entries) that any component can write to via `DEBUG_LOG` messages.
 
 ### Offscreen Document
 
-Chrome Manifest V3 service workers have no DOM access, so HTML parsing and conversion happen in a dedicated offscreen document. It receives raw HTML and runs it through a multi-step pipeline:
+Chrome Manifest V3 service workers have no DOM access, so HTML parsing and conversion happen in a dedicated offscreen document. It receives raw HTML, an extractor ID, and the page URL, then runs it through an async pipeline:
 
-1. **Parse** the HTML string with `DOMParser`.
-2. **Strip** scripts, styles, iframes, SVGs, canvas elements, hidden elements (detected by attribute, inline style, and common CSS class heuristics), and ad containers.
-3. **Convert** the cleaned DOM to markdown using [Turndown](https://github.com/mixmark-io/turndown) with custom rules for headings, code blocks, buttons, and images.
+1. **Sanitize** the HTML with DOMPurify.
+2. **Parse** the sanitized string with `DOMParser`.
+3. **Extract** readable content using the selected extractor from the extractor registry (see below). Extractors may be synchronous or asynchronous (e.g. Postlight).
+4. **Convert** the extracted HTML to markdown using [Turndown](https://github.com/mixmark-io/turndown) with custom rules for tables, code blocks, buttons, and images.
 
 The resulting markdown string is sent back to the background worker, which forwards it to the content script for display.
+
+### Extractor Registry
+
+Content extraction is handled by a pluggable registry of extractors (`src/offscreen/extractors/`). Each extractor implements a common `Extractor` interface that takes a parsed `Document` and an `ExtractorContext` (raw HTML + page URL), and returns an `ExtractorResult` (or `Promise<ExtractorResult>`) with content HTML plus optional metadata (title, author, site, published date). The registry maps `ExtractorId` strings to extractor instances and provides a `getExtractor(id)` lookup with a default fallback to Defuddle.
+
+Built-in extractors:
+
+- **Defuddle** (`defuddle/full`) -- the default. Good general-purpose extraction with strong metadata parsing.
+- **Readability** (`@mozilla/readability`) -- Mozilla's reader-mode engine. Clones the document before parsing since Readability mutates the DOM.
+- **Postlight** (`@postlight/parser`) -- Postlight's Mercury Parser. Uses an async API that takes raw HTML and the page URL for extraction.
+
+To add a new extractor: add its ID to the `ExtractorId` union in `src/types/extractor.ts`, create an extractor file implementing the `Extractor` interface, register it in `src/offscreen/extractors/registry.ts`, and add a tab entry in `src/content/action-panel.ts`.
 
 ### Debug Log
 
