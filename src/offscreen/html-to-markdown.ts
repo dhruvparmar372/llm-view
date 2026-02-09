@@ -1,4 +1,5 @@
 import TurndownService from 'turndown';
+import { gfm } from 'turndown-plugin-gfm';
 
 const turndown = new TurndownService({
   headingStyle: 'atx',
@@ -8,6 +9,8 @@ const turndown = new TurndownService({
   fence: '```',
   linkStyle: 'inlined',
 });
+
+turndown.use(gfm);
 
 // Strip unwanted elements
 turndown.addRule('stripUnwanted', {
