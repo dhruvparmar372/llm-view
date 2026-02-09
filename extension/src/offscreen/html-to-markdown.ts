@@ -142,7 +142,7 @@ export async function convertHtmlToMarkdown(html: string, extractorId?: Extracto
     const result = await extractor.extract(doc, { html: cleanHtml, url: url ?? '' });
     if (!result.content || !result.content.trim()) {
       debug(`[html-to-markdown] ${extractor.id} could not extract content`);
-      return '[llm-see] Could not extract readable content from this page.';
+      return '[llm-view] Could not extract readable content from this page.';
     }
 
     // Build markdown from extracted metadata + content
@@ -167,6 +167,6 @@ export async function convertHtmlToMarkdown(html: string, extractorId?: Extracto
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
     debug(`[html-to-markdown] conversion failed: ${message}`);
-    return '[llm-see] Failed to convert this page to markdown.';
+    return '[llm-view] Failed to convert this page to markdown.';
   }
 }

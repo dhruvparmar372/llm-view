@@ -73,7 +73,7 @@ chrome.runtime.onMessage.addListener((message, sender) => {
         });
       })
       .catch((err) => {
-        console.error('[llm-see] Conversion error:', err);
+        console.error('[llm-view] Conversion error:', err);
       });
 
     return false;
@@ -94,6 +94,6 @@ chrome.action.onClicked.addListener(async (tab) => {
       files: ['content.js'],
     });
   } catch (err) {
-    console.error('[llm-see] Failed to inject content script:', err);
+    console.error('[llm-view] Failed to inject content script:', err);
   }
 });

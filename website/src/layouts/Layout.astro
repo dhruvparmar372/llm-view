@@ -12,7 +12,7 @@ const ogImage = new URL("/og-image.png", Astro.site);
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareApplication",
-  name: "LLM See",
+  name: "LLM View",
   description,
   applicationCategory: "BrowserApplication",
   operatingSystem: "Chrome",
@@ -55,7 +55,7 @@ const jsonLd = {
     <meta property="og:image" content={ogImage.href} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:site_name" content="LLM See" />
+    <meta property="og:site_name" content="LLM View" />
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image" />

@@ -1,4 +1,4 @@
-# LLM See
+# LLM View
 
 A Chrome extension that toggles any webpage into clean, LLM-friendly markdown. One click gives you a distraction-free view of the page content, ready to copy and paste into any LLM chat.
 
@@ -8,7 +8,7 @@ A Chrome extension that toggles any webpage into clean, LLM-friendly markdown. O
 ## Project Structure
 
 ```
-llm-see/
+llm-view/
 ├── extension/   # Chrome extension (Manifest V3)
 └── website/     # Project website (Astro)
 ```
@@ -23,7 +23,7 @@ llm-see/
 1. Clone the repo and install dependencies:
    ```bash
    git clone https://github.com/...  # TODO: add repo URL
-   cd llm-see/extension
+   cd llm-view/extension
    npm install
    ```
 2. Build the extension:

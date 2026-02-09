@@ -16,7 +16,7 @@ export function pushLog(source: string, message: string): void {
 }
 
 export function surfaceDebugLogs(): void {
-  console.group(`[llm-see] Debug logs (${logs.length} entries)`);
+  console.group(`[llm-view] Debug logs (${logs.length} entries)`);
   for (const entry of logs) {
     const time = new Date(entry.timestamp).toISOString().slice(11, 23);
     console.log(`${time} [${entry.source}] ${entry.message}`);

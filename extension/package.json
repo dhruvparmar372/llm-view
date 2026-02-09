@@ -1,5 +1,5 @@
 {
-  "name": "llm-see",
+  "name": "llm-view",
   "version": "0.1.0",
   "description": "Toggle any webpage into LLM-friendly markdown",
   "type": "module",

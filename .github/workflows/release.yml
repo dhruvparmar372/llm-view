@@ -34,7 +34,7 @@ jobs:
       - name: Package extension
         run: |
           cd dist
-          zip -r ../llm-see-${{ steps.version.outputs.value }}.zip .
+          zip -r ../llm-view-${{ steps.version.outputs.value }}.zip .
 
       - name: Create release
         working-directory: extension
@@ -42,7 +42,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           TAG="v${{ steps.version.outputs.value }}"
-          ZIP="llm-see-${{ steps.version.outputs.value }}.zip"
+          ZIP="llm-view-${{ steps.version.outputs.value }}.zip"
 
           # Delete existing release/tag for this version if it exists
           gh release delete "$TAG" --yes 2>/dev/null || true
@@ -50,17 +50,17 @@ jobs:
 
           # Create the release with the versioned zip
           gh release create "$TAG" "$ZIP" \
-            --title "llm-see ${{ steps.version.outputs.value }}" \
+            --title "llm-view ${{ steps.version.outputs.value }}" \
             --generate-notes
 
-          # Copy to llm-see.zip for the "latest" convenience artifact
-          cp "$ZIP" llm-see.zip
+          # Copy to llm-view.zip for the "latest" convenience artifact
+          cp "$ZIP" llm-view.zip
 
           # Update the "latest" release
           gh release delete latest --yes 2>/dev/null || true
           git push origin :latest 2>/dev/null || true
 
-          gh release create latest llm-see.zip \
-            --title "Latest — llm-see ${{ steps.version.outputs.value }}" \
+          gh release create latest llm-view.zip \
+            --title "Latest — llm-view ${{ steps.version.outputs.value }}" \
             --notes "Convenience release pointing to the latest build (v${{ steps.version.outputs.value }})." \
             --latest

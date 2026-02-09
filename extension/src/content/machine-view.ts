@@ -1,6 +1,6 @@
 export function createMachineOverlay(): HTMLElement {
   const overlay = document.createElement('div');
-  overlay.id = 'llm-see-machine-overlay';
+  overlay.id = 'llm-view-machine-overlay';
 
   Object.assign(overlay.style, {
     position: 'fixed',

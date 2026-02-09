@@ -9,7 +9,7 @@ function debug(message: string): void {
 }
 
 // Idempotency guard
-if (!document.getElementById('llm-see-toggle-host')) {
+if (!document.getElementById('llm-view-toggle-host')) {
   init();
 }
 

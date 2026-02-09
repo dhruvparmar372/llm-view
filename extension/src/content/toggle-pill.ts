@@ -3,7 +3,7 @@ export type OnToggle = (mode: ViewMode) => void;
 
 export function createTogglePill(onToggle: OnToggle): HTMLElement {
   const host = document.createElement('div');
-  host.id = 'llm-see-toggle-host';
+  host.id = 'llm-view-toggle-host';
 
   const shadow = host.attachShadow({ mode: 'closed' });
 

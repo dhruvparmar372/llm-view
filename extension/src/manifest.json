@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "LLM See",
+  "name": "LLM View",
   "version": "0.1.0",
   "description": "Toggle any webpage into LLM-friendly markdown",
   "icons": {

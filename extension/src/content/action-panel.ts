@@ -24,7 +24,7 @@ export function createActionPanel(
   onCopy: OnCopy,
 ): HTMLElement {
   const panel = document.createElement('div');
-  panel.id = 'llm-see-action-panel';
+  panel.id = 'llm-view-action-panel';
   Object.assign(panel.style, {
     position: 'fixed',
     top: '12px',
