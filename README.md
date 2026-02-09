@@ -32,6 +32,29 @@ llm-view/
    ```
 3. Open `chrome://extensions` in Chrome, enable **Developer mode**, click **Load unpacked**, and select the `extension/dist/` folder.
 
+## Development
+
+If you're using [Claude Code](https://claude.ai/claude-code), add the stop-check hook to your local settings (`.claude/settings.local.json`):
+
+```json
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash .claude/hooks/stop-check.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+This hook runs automatically when Claude finishes responding. It detects uncommitted changes in `extension/` or `website/` and verifies that TypeScript checks and builds pass for the affected directories. If anything fails, the errors are reported back to Claude for it to fix.
+
 ## Architecture
 
 The extension follows Chrome Manifest V3 conventions and is split into three isolated runtime contexts that communicate via message passing:
