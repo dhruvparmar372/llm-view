@@ -42,28 +42,24 @@ const horizontalLine = "─".repeat(120);
     <!-- Demo Video Hero -->
     <section class="mb-20" aria-labelledby="demo-heading">
       <h2 id="demo-heading" class="sr-only">Demo</h2>
-      <div class="video-box">
-        <div class="video-box-top text-(--color-text-dim) text-xs select-none overflow-hidden whitespace-nowrap">
-          ┌{horizontalLine}┐
-        </div>
-        <div class="border-x border-(--color-text-dim)">
-          <video
-            class="w-full"
-            controls
-            preload="metadata"
-            poster=""
-            width="768"
-            height="432"
-          >
-            <source src="https://www.w3schools.com/html/mov_bbb.mp4" type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-        <div class="video-box-bottom text-(--color-text-dim) text-xs select-none overflow-hidden whitespace-nowrap">
-          └{horizontalLine}┘
-        </div>
+      <div class="overflow-hidden rounded-xl border border-(--color-border) bg-(--color-surface)">
+        <video
+          class="w-full"
+          controls
+          autoplay
+          muted
+          loop
+          playsinline
+          preload="metadata"
+          width="1276"
+          height="1050"
+        >
+          <source src="/demo.webm" type="video/webm" />
+          <source src="/demo.mp4" type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
       </div>
-      <p class="mt-3 text-center text-xs text-(--color-text-dim)">
+      <p class="mt-4 text-center text-sm font-medium text-(--color-text-muted)">
         <span class="text-(--color-accent)">&gt;</span> Click the toggle. Get markdown. That's it.
       </p>
     </section>
