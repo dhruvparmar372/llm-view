@@ -1,5 +1,7 @@
-// Use the browser-specific build to avoid Node module dependencies (e.g. 'url')
-import Parser from '@postlight/parser/dist/mercury.web.js';
+// Use the ESM build which has a proper `export default`.
+// The conditional require('jsdom') / require('util') inside it only fire when
+// DOMParser is unavailable (Node-only), so they are dead code in browser contexts.
+import Parser from '@postlight/parser/dist/mercury.esm.js';
 import type { Extractor, ExtractorContext, ExtractorResult } from './types';
 
 export const postlightExtractor: Extractor = {

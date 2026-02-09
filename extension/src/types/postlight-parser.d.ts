@@ -29,7 +29,7 @@ declare module '@postlight/parser' {
   export default Parser;
 }
 
-declare module '@postlight/parser/dist/mercury.web.js' {
+declare module '@postlight/parser/dist/mercury.esm.js' {
   import Parser from '@postlight/parser';
   export default Parser;
 }
