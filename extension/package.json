@@ -8,6 +8,9 @@
     "build": "tsc && vite build"
   },
   "dependencies": {
+    "@mozilla/readability": "^0.6.0",
+    "defuddle": "^0.6.6",
+    "dompurify": "^3.3.1",
     "turndown": "^7.2.0",
     "turndown-plugin-gfm": "^1.0.2"
   },

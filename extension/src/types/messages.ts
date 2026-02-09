@@ -1,7 +1,10 @@
+import type { ExtractorId } from './extractor';
+
 export interface ConvertHtmlMessage {
   type: 'CONVERT_HTML';
   target: 'offscreen';
   html: string;
+  extractor?: ExtractorId;
 }
 
 export interface MarkdownReadyMessage {
@@ -12,6 +15,7 @@ export interface MarkdownReadyMessage {
 export interface ConvertPageMessage {
   type: 'CONVERT_PAGE';
   html: string;
+  extractor?: ExtractorId;
 }
 
 export interface DebugLogMessage {
