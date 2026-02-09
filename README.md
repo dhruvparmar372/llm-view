@@ -34,26 +34,7 @@ llm-view/
 
 ## Development
 
-If you're using [Claude Code](https://claude.ai/claude-code), add the stop-check hook to your local settings (`.claude/settings.local.json`):
-
-```json
-{
-  "hooks": {
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "bash .claude/hooks/stop-check.sh"
-          }
-        ]
-      }
-    ]
-  }
-}
-```
-
-This hook runs automatically when Claude finishes responding. It detects uncommitted changes in `extension/` or `website/` and verifies that TypeScript checks and builds pass for the affected directories. If anything fails, the errors are reported back to Claude for it to fix.
+If you're using [Claude Code](https://claude.ai/claude-code), run `/llmview:check` to typecheck and build any changed directories. It detects uncommitted changes in `extension/` or `website/`, runs the appropriate checks, and fixes any errors it finds.
 
 ## Architecture
 
