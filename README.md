@@ -5,6 +5,14 @@ A Chrome extension that toggles any webpage into clean, LLM-friendly markdown. O
 <!-- TODO: embed short demo video -->
 <!-- <video src="..." /> -->
 
+## Project Structure
+
+```
+llm-see/
+├── extension/   # Chrome extension (Manifest V3)
+└── website/     # Project website (Astro)
+```
+
 ## Install
 
 <!-- TODO: Chrome Web Store link -->
@@ -15,14 +23,14 @@ A Chrome extension that toggles any webpage into clean, LLM-friendly markdown. O
 1. Clone the repo and install dependencies:
    ```bash
    git clone https://github.com/...  # TODO: add repo URL
-   cd llm-see
+   cd llm-see/extension
    npm install
    ```
 2. Build the extension:
    ```bash
    npm run build
    ```
-3. Open `chrome://extensions` in Chrome, enable **Developer mode**, click **Load unpacked**, and select the `dist/` folder.
+3. Open `chrome://extensions` in Chrome, enable **Developer mode**, click **Load unpacked**, and select the `extension/dist/` folder.
 
 ## Architecture
 

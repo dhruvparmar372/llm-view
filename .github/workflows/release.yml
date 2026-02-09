@@ -10,6 +10,9 @@ permissions:
 jobs:
   release:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: extension
     steps:
       - uses: actions/checkout@v4
 
@@ -17,6 +20,7 @@ jobs:
         with:
           node-version: 20
           cache: npm
+          cache-dependency-path: extension/package-lock.json
 
       - run: npm ci
       - run: npm run build
@@ -33,6 +37,7 @@ jobs:
           zip -r ../llm-see-${{ steps.version.outputs.value }}.zip .
 
       - name: Create release
+        working-directory: extension
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
