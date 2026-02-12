@@ -16,6 +16,7 @@ export default defineConfig({
         content: resolve(__dirname, 'src/content/index.ts'),
         background: resolve(__dirname, 'src/background/index.ts'),
         offscreen: resolve(__dirname, 'src/offscreen/offscreen.ts'),
+        popup: resolve(__dirname, 'src/popup/popup.ts'),
       },
       output: {
         entryFileNames: '[name].js',
@@ -28,6 +29,7 @@ export default defineConfig({
       targets: [
         { src: 'src/manifest.json', dest: '.' },
         { src: 'src/offscreen/offscreen.html', dest: '.' },
+        { src: 'src/popup/popup.html', dest: '.' },
         { src: 'public/*.png', dest: '.' },
       ],
     }),

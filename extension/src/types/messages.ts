@@ -25,8 +25,14 @@ export interface DebugLogMessage {
   message: string;
 }
 
+export interface StartConversionMessage {
+  type: 'START_CONVERSION';
+  tabId: number;
+}
+
 export type LlmSeeMessage =
   | ConvertHtmlMessage
   | MarkdownReadyMessage
   | ConvertPageMessage
-  | DebugLogMessage;
+  | DebugLogMessage
+  | StartConversionMessage;

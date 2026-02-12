@@ -51,7 +51,7 @@ async function convertViaOffscreen(html: string, extractor?: ExtractorId, url?: 
 }
 
 // --- Message listener ---
-chrome.runtime.onMessage.addListener((message, sender) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message.type === 'DEBUG_LOG') {
     const source = inferSource(sender);
     pushLog(source, message.message);
@@ -79,21 +79,56 @@ chrome.runtime.onMessage.addListener((message, sender) => {
     return false;
   }
 
+  if (message.type === 'START_CONVERSION') {
+    const tabId = message.tabId as number;
+    bgDebug(`popup requested conversion for tab:${tabId}`);
+
+    handleStartConversion(tabId)
+      .then((markdown) => sendResponse({ markdown }))
+      .catch((err) => {
+        console.error('[llm-view] START_CONVERSION error:', err);
+        sendResponse({ error: String(err) });
+      });
+
+    return true; // keep channel open for async sendResponse
+  }
+
   return false;
 });
 
-// --- Icon click: inject content script ---
-chrome.action.onClicked.addListener(async (tab) => {
-  if (!tab.id) return;
-  const tabId = tab.id;
-  bgDebug(`icon clicked, injecting content script to tab:${tabId}`);
+// --- Popup-driven conversion ---
+async function handleStartConversion(tabId: number): Promise<string> {
+  // 1. Inject content script (idempotent)
+  await chrome.scripting.executeScript({
+    target: { tabId },
+    files: ['content.js'],
+  });
 
-  try {
-    await chrome.scripting.executeScript({
-      target: { tabId },
-      files: ['content.js'],
-    });
-  } catch (err) {
-    console.error('[llm-view] Failed to inject content script:', err);
-  }
-});
+  // 2. Get page HTML and URL
+  const [htmlResult] = await chrome.scripting.executeScript({
+    target: { tabId },
+    func: () => document.body.innerHTML,
+  });
+  const [urlResult] = await chrome.scripting.executeScript({
+    target: { tabId },
+    func: () => window.location.href,
+  });
+
+  const html = htmlResult.result as string;
+  const url = urlResult.result as string;
+
+  bgDebug(`popup conversion: got ${html.length} chars from tab:${tabId}`);
+
+  // 3. Convert via offscreen
+  const markdown = await convertViaOffscreen(html, undefined, url);
+
+  bgDebug(`popup conversion done for tab:${tabId} (${markdown.length} chars markdown)`);
+
+  // 4. Pre-load overlay in content script (view stays on HUMAN)
+  chrome.tabs.sendMessage(tabId, {
+    type: 'MARKDOWN_READY',
+    markdown,
+  });
+
+  return markdown;
+}

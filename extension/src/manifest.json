@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "LLM View",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Toggle any webpage into LLM-friendly markdown",
   "icons": {
     "16": "icon-16.png",
@@ -14,7 +14,8 @@
       "16": "icon-16.png",
       "32": "icon-32.png"
     },
-    "default_title": "Toggle LLM View"
+    "default_title": "Toggle LLM View",
+    "default_popup": "popup.html"
   },
   "permissions": ["activeTab", "scripting", "offscreen"],
   "background": {
