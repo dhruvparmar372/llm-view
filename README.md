@@ -1,9 +1,8 @@
 # LLM View
 
-A Chrome extension that toggles any webpage into clean, LLM-friendly markdown. One click gives you a distraction-free view of the page content, ready to copy and paste into any LLM chat.
+A Chrome extension that toggles any webpage into clean, LLM-friendly markdown. One click converts the page and copies the markdown straight to your clipboard.
 
-<!-- TODO: embed short demo video -->
-<!-- <video src="..." /> -->
+<video src="https://llmview.page/demo.mp4" autoplay loop muted playsinline width="100%"></video>
 
 ## Project Structure
 
@@ -22,7 +21,7 @@ llm-view/
 
 1. Clone the repo and install dependencies:
    ```bash
-   git clone https://github.com/...  # TODO: add repo URL
+   git clone https://github.com/dhruvparmar372/llm-view
    cd llm-view/extension
    npm install
    ```
@@ -38,27 +37,39 @@ If you're using [Claude Code](https://claude.ai/claude-code), run `/llmview:chec
 
 ## Architecture
 
-The extension follows Chrome Manifest V3 conventions and is split into three isolated runtime contexts that communicate via message passing:
+The extension follows Chrome Manifest V3 conventions and is split into four isolated runtime contexts that communicate via message passing:
 
 ```
-┌─────────────┐         ┌──────────────────┐         ┌─────────────────────┐
-│   Content    │         │    Background     │         │     Offscreen       │
-│   Script     │         │  Service Worker   │         │     Document        │
-│              │         │                   │         │                     │
-│  Toggle pill │─ CONVERT_PAGE ────────────>│         │                     │
-│  Action panel│  (html, extractor, url)     │─ CONVERT_HTML ──────────────>│
-│  + overlay   │         │                   │  (html, extractor, url)      │
-│              │         │                   │         │  Extractor registry │
-│              │         │                   │<── markdown ────────────────│
-│              │<─ MARKDOWN_READY ───────────│         │  Turndown convert   │
-│  Display md  │         │                   │         │                     │
-└─────────────┘         └──────────────────┘         └─────────────────────┘
-    (tab)                 (extension process)            (hidden DOM context)
+┌───────────┐  ┌─────────────┐         ┌──────────────────┐         ┌─────────────────────┐
+│   Popup   │  │   Content    │         │    Background     │         │     Offscreen       │
+│           │  │   Script     │         │  Service Worker   │         │     Document        │
+│           │  │              │         │                   │         │                     │
+│ START_CONVERSION ──────────────────>│                   │         │                     │
+│           │  │              │         │── executeScript ─>│         │                     │
+│           │  │              │         │  (inject + get    │         │                     │
+│           │  │              │         │   page HTML/URL)  │─ CONVERT_HTML ──────────────>│
+│           │  │              │         │                   │  (html, extractor, url)      │
+│           │  │              │         │                   │         │  Extractor registry │
+│           │  │              │         │                   │<── markdown ────────────────│
+│           │  │              │<─ MARKDOWN_READY ───────────│         │  Turndown convert   │
+│<── { markdown } ───────────────────│  (pre-load overlay) │         │                     │
+│ Copy to   │  │              │         │                   │         │                     │
+│ clipboard │  │  Toggle pill │─ CONVERT_PAGE ────────────>│         │                     │
+│           │  │  Action panel│  (extractor switch)        │─ CONVERT_HTML ──────────────>│
+│           │  │  + overlay   │         │                   │         │                     │
+│           │  │              │<─ MARKDOWN_READY ───────────│         │                     │
+└───────────┘  └─────────────┘         └──────────────────┘         └─────────────────────┘
+  (popup)          (tab)                 (extension process)            (hidden DOM context)
 ```
+
+There are two conversion paths:
+
+1. **Popup flow (one-click)** -- Clicking the extension icon opens a small popup that sends `START_CONVERSION` to the background. The background injects the content script, grabs the page HTML, converts it, copies the markdown to the clipboard via the popup, and pre-loads the overlay in the content script. The page view stays untouched.
+2. **Manual flow** -- The user clicks MACHINE on the toggle pill. The content script sends `CONVERT_PAGE` to the background, which converts and sends `MARKDOWN_READY` back. The user can also switch extractors in the action panel, which re-triggers conversion.
 
 ### Content Script
 
-Injected into the active tab when the user clicks the extension icon. It creates three UI elements appended to `document.documentElement` (avoiding pages that replace `document.body`):
+Injected into the active tab when the popup triggers conversion (or when the user manually toggles to MACHINE mode). It creates three UI elements appended to `document.documentElement` (avoiding pages that replace `document.body`):
 
 - **Toggle pill** -- a fixed-position HUMAN / MACHINE switch at the bottom center of the page, rendered inside a closed Shadow DOM so host-page styles cannot interfere.
 - **Action panel** -- a fixed top-right bar (visible in MACHINE mode) containing an extractor switcher and a copy button. The extractor switcher is a dark pill-style tab group that lets the user choose between content extractors (Defuddle, Readability, Postlight). Switching extractors re-sends the page HTML for conversion with the newly selected extractor.
@@ -66,12 +77,16 @@ Injected into the active tab when the user clicks the extension icon. It creates
 
 When the user switches to MACHINE mode the content script sends the page's `innerHTML`, the selected extractor ID, and the page URL to the background service worker and waits for the converted markdown to come back.
 
+### Popup
+
+A small dark-themed popup (320px) that opens when the user clicks the extension icon. On open it immediately sends `START_CONVERSION` to the background, shows a spinner while converting, and auto-copies the resulting markdown to the clipboard. The page view is never modified -- the popup handles everything without switching the page to machine view.
+
 ### Background Service Worker
 
-The central coordinator. It listens for two things:
+The central coordinator. It handles two conversion paths:
 
-1. **Extension icon clicks** -- injects the content script into the current tab via `chrome.scripting.executeScript`.
-2. **`CONVERT_PAGE` messages** from the content script -- ensures the offscreen document exists (creating it on-demand as a singleton), forwards the raw HTML, extractor ID, and page URL to it, and relays the resulting markdown back to the originating tab.
+1. **`START_CONVERSION` messages** from the popup -- injects the content script, grabs the page HTML and URL via `chrome.scripting.executeScript`, converts it through the offscreen document, pre-loads the overlay in the content script via `MARKDOWN_READY`, and returns the markdown to the popup for clipboard copy.
+2. **`CONVERT_PAGE` messages** from the content script -- ensures the offscreen document exists (creating it on-demand as a singleton), forwards the raw HTML, extractor ID, and page URL to it, and relays the resulting markdown back to the originating tab. This path is used when the user manually switches extractors in the action panel.
 
 It also maintains a circular debug log (up to 10 000 entries) that any component can write to via `DEBUG_LOG` messages.
 
