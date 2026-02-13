@@ -14,8 +14,7 @@ llm-view/
 
 ## Install
 
-<!-- TODO: Chrome Web Store link -->
-<!-- [Install from the Chrome Web Store](https://chrome.google.com/webstore/detail/...) -->
+[Install from the Chrome Web Store](https://chromewebstore.google.com/detail/mnknipliheieehpdmipkbaoocgidnibk)
 
 **Manual install (development):**
 
