@@ -1,7 +1,14 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { readFileSync } from "node:fs";
 
 const horizontalLine = "─".repeat(120);
+
+const stats = JSON.parse(
+  readFileSync(new URL("../../.data/stats.json", import.meta.url), "utf-8")
+);
+
+const avgDaily = (stats.totals.installs / stats.totals.days).toFixed(1);
 ---
 
 <Layout title="LLM View — Any webpage, as clean markdown">
@@ -78,6 +85,30 @@ const horizontalLine = "─".repeat(120);
         >
           read the source
         </a>
+      </p>
+    </section>
+
+    <!-- Stats -->
+    <section class="mb-20" aria-labelledby="stats-heading">
+      <h2 id="stats-heading" class="mb-6 text-sm tracking-wide text-(--color-text-dim)">
+        <span class="text-(--color-accent)">$</span> cat stats.log
+      </h2>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="border border-(--color-border) px-5 py-4">
+          <p class="text-2xl font-semibold text-(--color-text)">{stats.totals.installs}</p>
+          <p class="mt-1 text-xs text-(--color-text-dim)">total installs</p>
+        </div>
+        <div class="border border-(--color-border) px-5 py-4">
+          <p class="text-2xl font-semibold text-(--color-text)">{avgDaily}</p>
+          <p class="mt-1 text-xs text-(--color-text-dim)">installs / day</p>
+        </div>
+        <div class="border border-(--color-border) px-5 py-4">
+          <p class="text-2xl font-semibold text-(--color-text)">{stats.totals.days}</p>
+          <p class="mt-1 text-xs text-(--color-text-dim)">days tracked</p>
+        </div>
+      </div>
+      <p class="mt-3 text-xs text-(--color-text-dim)">
+        {stats.dateRange.from} &mdash; {stats.dateRange.to} &middot; updated {stats.lastUpdated}
       </p>
     </section>
 

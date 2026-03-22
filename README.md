@@ -4,6 +4,17 @@ A Chrome extension that toggles any webpage into clean, LLM-friendly markdown. O
 
 <video src="https://llmview.page/demo.mp4" autoplay loop muted playsinline width="100%"></video>
 
+## Stats
+
+<!-- AUTO-GENERATED — run `cd website && npm run stats` to update -->
+| Metric | Value |
+|--------|-------|
+| Total installs | 59 |
+| Installs / day | 2.0 |
+| Days tracked | 30 |
+| Date range | 2026-02-19 — 2026-03-20 |
+<!-- END STATS -->
+
 ## Project Structure
 
 ```
