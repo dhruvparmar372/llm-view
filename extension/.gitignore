@@ -12,6 +12,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# npm lockfile (using bun)
+package-lock.json
+
 # OS files
 .DS_Store
 Thumbs.db

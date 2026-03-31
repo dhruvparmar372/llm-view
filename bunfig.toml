@@ -1,0 +1,4 @@
+[install]
+# Require packages to be published for at least 7 days before allowing install.
+# Protects against supply-chain attacks via newly-published malicious versions.
+minimumReleaseAge = 604800

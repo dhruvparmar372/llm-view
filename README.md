@@ -6,7 +6,7 @@ A Chrome extension that toggles any webpage into clean, LLM-friendly markdown. O
 
 ## Stats
 
-<!-- AUTO-GENERATED — run `cd website && npm run stats` to update -->
+<!-- AUTO-GENERATED — run `cd website && bun run stats` to update -->
 | Metric | Value |
 |--------|-------|
 | Total installs | 59 |
@@ -33,11 +33,11 @@ llm-view/
    ```bash
    git clone https://github.com/dhruvparmar372/llm-view
    cd llm-view/extension
-   npm install
+   bun install
    ```
 2. Build the extension:
    ```bash
-   npm run build
+   bun run build
    ```
 3. Open `chrome://extensions` in Chrome, enable **Developer mode**, click **Load unpacked**, and select the `extension/dist/` folder.
 
